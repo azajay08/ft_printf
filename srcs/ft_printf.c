@@ -6,7 +6,7 @@
 /*   By: ajones <ajones@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/05 10:54:31 by ajones            #+#    #+#             */
-/*   Updated: 2022/09/08 16:31:59 by ajones           ###   ########.fr       */
+/*   Updated: 2022/10/07 17:38:20 by ajones           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,28 +41,26 @@ void	init_fspec(t_spec *fspec)
 int	ft_printf(const char *format, ...)
 {
 	va_list	ap;
-	t_spec	*fspec;
+	t_spec	fspec;
 	int		i;
 
 	i = -1;
 	va_start(ap, format);
-	fspec = (t_spec *)malloc(sizeof(t_spec));
-	fspec->total = 0;
+	fspec.total = 0;
 	while (format[++i])
 	{
 		if (format[i] == '%')
 		{
 			if (is_form_spec(format[i + 1]) || is_flag(format[i + 1]))
-				fspec->total += read_spec(&format[i++], &ap, fspec);
+				fspec.total += read_spec(&format[i++], &ap, &fspec);
 			while (is_flag(format[i]))
 				i++;
 			if (!is_form_spec(format[i]) && !is_flag(format[i]))
-				print_c(format[i], fspec);
+				print_c(format[i], &fspec);
 		}
 		else
-			print_c(format[i], fspec);
+			print_c(format[i], &fspec);
 	}
-	free(fspec);
 	va_end(ap);
-	return (fspec->total);
+	return (fspec.total);
 }
